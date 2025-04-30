@@ -175,7 +175,7 @@
 {:else}
   <div class="app-container">
     <header class="app-header">
-      <h1>Inventory Management</h1>
+      <h1>Inventor-IT</h1>
     </header>
 
     <main class="app-main">
