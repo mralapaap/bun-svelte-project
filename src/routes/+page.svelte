@@ -31,7 +31,7 @@
 
 <div class="auth-container">
   <div class="auth-card">
-    <h1>Welcome Back</h1>
+    <h1>Inventor-IT</h1>
     <p class="subtitle">Log in to manage your inventory</p>
     
     {#if error}
