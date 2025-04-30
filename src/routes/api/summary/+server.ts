@@ -15,22 +15,17 @@ export async function GET() {
 }
 
 async function generateInsights(items: any[]) {
-  // Build a prompt that uses pesos (₱)
+  // Build a more open-ended, data-driven prompt
   const prompt = `
-You are an AI specialized in inventory analytics. Use Philippine pesos (₱) in your calculations and output.
-Given the following items (with their quantity and price), provide:
-- Total number of items
-- Total inventory value (sum of quantity * price), formatted with ₱
-- Items that are low in stock (quantity < 10) or "None"
-- One brief general recommendation
+You are an AI specialized in inventory analytics and warehouse management. Use Philippine pesos (₱) for all monetary values.
 
-Respond ONLY with the final summary paragraph (no reasoning steps, no extra commentary).
+Here is the current inventory data:
+${items.map(i => `- ${i.name}: quantity=${i.quantity}, price=₱${(i.price / 100).toFixed(2)}`).join('\n')}
 
-Inventory Data:
-${items.map(i => `- ${i.name}: quantity=${i.quantity}, price=₱${i.price}`).join('\n')}
+Based only on this data, provide a short analytical summary highlighting any relevant patterns, risks, opportunities, or anomalies. Avoid generic advice. Base everything directly on the numbers.
 `;
 
-  // Call the local DeepSeek-R1 endpoint
+  // Call your local DeepSeek-R1 endpoint
   let responseText: string;
   try {
     const res = await fetch('http://localhost:11434/api/generate', {
@@ -50,11 +45,7 @@ ${items.map(i => `- ${i.name}: quantity=${i.quantity}, price=₱${i.price}`).joi
     return 'Unable to generate insights at this time.';
   }
 
-  // Clean the AI response:
-  // 1. Remove any <think>…</think> blocks  
-  // 2. Strip out all ** markers  
-  // 3. Replace any stray $ with ₱  
-  // 4. Trim whitespace
+  // Clean the response
   return responseText
     .replace(/<think>[\s\S]*?<\/think>/gi, '')
     .replace(/\*\*/g, '')
